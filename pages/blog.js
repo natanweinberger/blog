@@ -24,19 +24,9 @@ const BlogPost = ({ title, description, slug }) => {
 
 const posts = [
   {
-    title: 'Why Herps are great',
-    description: 'I love them a lot and you should too.',
-    slug: 'why-herps-are-great',
-  },
-  {
-    title: "What's the deal with borders?",
-    description: 'What do we need them for anyways?',
-    slug: 'borders',
-  },
-  {
-    title: 'Where are all these crumbs coming from?',
-    description: 'A deep dive into the couch cushions.',
-    slug: 'where-are-all-these-crumbs-coming-from',
+    title: 'My First Post',
+    description: 'There will be more to come.',
+    slug: 'my-first-post',
   },
 ];
 

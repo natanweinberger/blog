@@ -13,7 +13,7 @@ const ByLine = ({ date }) => {
 const BlogPostHeader = () => {
   return (
     <>
-      <H1>Why Herps Are Great</H1>
+      <H1>My First Post</H1>
       <ByLine date="June 13, 2021" />
       <hr className="my-4" />
     </>
@@ -23,8 +23,7 @@ const BlogPostHeader = () => {
 const Post = () => (
   <Container>
     <BlogPostHeader />
-    <p>They are lovely.</p>
-    <p>Also, they are really nice.</p>
+    <p>My first post</p>
   </Container>
 );
 
