@@ -20,10 +20,13 @@ const BlogPostHeader = () => {
   );
 };
 
-export default () => (
+const Post = () => (
   <Container>
     <BlogPostHeader />
     <p>They are lovely.</p>
     <p>Also, they are really nice.</p>
   </Container>
 );
+
+
+export default Post;
