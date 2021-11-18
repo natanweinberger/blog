@@ -1,26 +1,21 @@
 import Link from 'next/link';
 
 const links = {
-  '/about': 'About',
   '/projects': 'Projects',
   '/blog': 'Blog',
   'https://github.com/natanweinberger': 'Source',
 };
 
 const Header = () => (
-  <nav className="flex flex-col sm:flex-row items-start sm:items-center w-full px-8 sm:px-4 justify-between my-8 max-w-4xl">
-    <div className="font-bold">
+  <nav className="flex flex-col sm:flex-row sm:space-x-8 items-start sm:items-center w-full my-8">
       <Link href="/" key="/">
-        <a>Natan Weinberger</a>
+        <a className="font-bold">Home</a>
       </Link>
-    </div>
-    <div className="flex flex-col sm:flex-row sm:space-x-4">
       {Object.keys(links).map((key) => (
         <Link href={key} key={key}>
-          <a>{links[key]}</a>
+          <a className="text-gray-600 dark:text-gray-400">{links[key]}</a>
         </Link>
       ))}
-    </div>
   </nav>
 );
 

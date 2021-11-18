@@ -5,7 +5,6 @@ const ByLine = ({ date }) => {
   return (
     <div className="flex w-full justify-between text-gray-700 text-sm">
       <span>Natan Weinberger / {date}</span>
-      <span>1 min read • 1 view</span>
     </div>
   );
 };
