@@ -3,7 +3,7 @@ import Container from '@/components/container';
 import { H1, H2 } from '@/components/heading';
 
 const BlogPostTitle = ({ children }) => (
-  <h3 className="font-semibold text-md md:text-lg text-black dark:text-white">
+  <h3 className="font-semibold text-md md:text-lg text-blue-700 dark:text-white">
     {children}
   </h3>
 );
@@ -15,7 +15,7 @@ const BlogPost = ({ title, description, slug }) => {
         <a>
           <BlogPostTitle>{title}</BlogPostTitle>
 
-          <span className="text-gray-700">{description}</span>
+          {/*<span>{description}</span>*/}
         </a>
       </Link>
     </div>
@@ -24,7 +24,7 @@ const BlogPost = ({ title, description, slug }) => {
 
 const posts = [
   {
-    title: 'My First Post',
+    title: 'What makes a good interview question?',
     description: 'There will be more to come.',
     slug: 'my-first-post',
   },

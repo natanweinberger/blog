@@ -7,7 +7,7 @@ const Container = ({ children }) => (
       <title>Natan Weinberger</title>
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-2xl text-gray-700">
     <Header />
     <main>{children}</main>
     </div>

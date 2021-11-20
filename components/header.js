@@ -13,7 +13,7 @@ const Header = () => (
       </Link>
       {Object.keys(links).map((key) => (
         <Link href={key} key={key}>
-          <a className="text-gray-600 dark:text-gray-400">{links[key]}</a>
+          <a>{links[key]}</a>
         </Link>
       ))}
   </nav>
