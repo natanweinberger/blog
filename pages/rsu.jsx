@@ -7,7 +7,7 @@ function RSU() {
 	const [stockDetails, setStockDetails] = useState(null)
 
 	useEffect(async () => {
-		const url = 'https://api.finage.co.uk/last/stock/changes/SHOP?apikey=API_KEY82S8BBO4H3W4NSB5BP6UPXPWGJBT4HQH'
+		const url = 'https://api.finage.co.uk/last/stock/changes/SHOP?apikey=API_KEY4461QWWqyQhs7BbajG02NJ0PslTOxFzI3nzh7gxMIBw0Xr'
 		const result = await fetch(url)
 		const data = await result.json()
 		const state = {price: data.lp, percentChangeDaily: data.cpd}
