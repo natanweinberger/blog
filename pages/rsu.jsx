@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Container from '@/components/container';
 
-const NUMBER_OF_SHARES = 432
+const NUMBER_OF_SHARES = 4320
 
 function RSU() {
 	const [stockDetails, setStockDetails] = useState(null)
