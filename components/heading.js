@@ -1,4 +1,4 @@
-const cssAttributes = 'font-bold mb-4 text-black dark:text-white';
+const cssAttributes = 'font-bold mb-4 text-black';
 
 export const H1 = ({ children }) => (
   <h1 className={`${cssAttributes} text-3xl md:text-5xl`}>

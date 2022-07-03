@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Header from '@/components/header';
 
 const Container = ({ children }) => (
-  <div className="flex flex-col items-center h-screen text-gray-700 dark:text-gray-300 bg-white dark:bg-black px-8">
+  <div className="flex flex-col items-center min-h-screen h-full text-gray-700 px-8">
     <Head>
       <title>Natan Weinberger</title>
       <link rel="icon" href="/favicon.ico" />
