@@ -3,7 +3,7 @@ import Container from '@/components/container';
 import { H1, H2 } from '@/components/heading';
 
 const BlogPostTitle = ({ children }) => (
-  <h3 className="font-semibold text-md md:text-lg text-blue-700 dark:text-white">
+  <h3 className="font-semibold text-md md:text-lg text-blue-700">
     {children}
   </h3>
 );
@@ -24,9 +24,9 @@ const BlogPost = ({ title, description, slug }) => {
 
 const posts = [
   {
-    title: 'What makes a good interview question?',
+    title: 'Slow joins, charsets and collations',
     description: 'There will be more to come.',
-    slug: 'my-first-post',
+    slug: 'mysql-charsets',
   },
 ];
 

@@ -1,0 +1,232 @@
+import { Post } from '@/components/post'
+import Container from '@/components/container';
+
+<Container>
+	<Post>
+
+# Charsets, collations, and slow joins in MySQL
+
+## The problem
+
+I have two tables, `artist` and `song`. They look like this:
+
+```
+mysql> desc artist;
++-------------------+--------------+-----+
+| Field             | Type         | Key |
++-------------------+--------------+-----+
+| artist_id         | varchar(100) | PRI |
+| name              | varchar(100) |     |
++-------------------+--------------+-----+
+```
+
+```
+mysql> desc song;
++-----------+--------------+-----+
+| Field     | Type         | Key |
++-----------+--------------+-----+
+| song_id   | int 		   | PRI |
+| title     | varchar(100) |     |
+| artist_id | varchar(100) | MUL |  # foreign key to artist
++-----------+--------------+-----+
+```
+
+
+I'd like to join them to match each song to its artist.
+
+```
+mysql>
+	SELECT song.title, artist.name
+	FROM song
+	JOIN artist USING (artist_id)
+	LIMIT 5;
++--------------------+--------------+
+| title              | name         |
++--------------------+--------------+
+| Busy Earnin'       | Jungle       |
+| Closetowhy         | Parcels      |
+| Keep Moving        | Jungle       |
+| Stairway to Heaven | Led Zeppelin |
+| Time               | Pink Floyd   |
++--------------------+--------------+
+5 rows in set (0.02 sec)
+
+```
+
+This join executes as expected -- quick and easy.
+
+## A step further
+
+I gained access to a new data source for artists. It has all the same fields, but updates with new artists as soon as they register on recording platforms, even if they don't have songs published yet. So instead of having about details for 150,000 artists, I now have about 200,000.
+
+Because all the fields are the same, I'm going to load this into a table called `artist_v2` and confirm my queries still work. I'll add a foreign key from `song` to the new `artist_v2` table to replicate the existing setup as closely as possible.
+
+```
+mysql>
+	SELECT song.title, artist.name
+	FROM song
+	JOIN artist_v2 USING (artist_id)
+	LIMIT 5;
++--------------------+--------------+
+| title              | name         |
++--------------------+--------------+
+| Busy Earnin'       | Jungle       |
+| Closetowhy         | Parcels      |
+| Keep Moving        | Jungle       |
+| Stairway to Heaven | Led Zeppelin |
+| Time               | Pink Floyd   |
++--------------------+--------------+
+5 rows in set (3.00 sec)
+```
+
+The results are correct, but the query took 3 seconds! That's way slower, something's off.
+
+## Possible causes
+
+The first questions that popped into my head:
+
+### Are all the same indices present on the new table?
+
+Yes. `artists_v2` has the same primary key and `song` has the same foreign key in place.
+
+### Are there substantially more records?
+
+Nope. Theoretically, if we went from 100K records to 100M records, the join could get slower despite the indices. In this case, the size of the table hasn't even doubled, just a few thousand more records.
+
+## Diagnosing the issue
+
+I'll try to generate some leads with the `EXPLAIN` command.
+
+**The fast query**
+
+```
+mysql>
+	EXPLAIN SELECT song.title, artist.name
+	FROM song
+	JOIN artist USING (artist_id)
+	LIMIT 5;
+
++----+--------+-------------------+---------+------+----------+-------------+
+| id | table  | possible_keys     | key     | rows | filtered | Extra       |
++----+----------------------------+---------+------+----------+-------------+
+| 1  | song   | PRIMARY,artist_id | PRIMARY | 304  | 100.0    | Using where |
+| 1  | artist | PRIMARY           | PRIMARY | 1    | 100.0    | <null>      |
++----+--------+-------------------+---------+------+----------+-------------+
+```
+
+**The slow query**
+
+```
+mysql>
+	EXPLAIN SELECT song.title, artist_v2.name
+	FROM song
+	JOIN artist_v2 USING (artist_id)
+	LIMIT 5;
+
++----+-----------+---------------+-----------+--------+----------+-----------------------+
+| id | table     | possible_keys | key       | rows   | filtered | Extra                 |
++----+---------------------------+-----------+--------+----------+-----------------------+
+| 1  | song      | artist_id     | artist_id | 1      | 100.0    | Using index condition |
+| 1  | artist_v2 | <null>        | <null>    | 198353 | 100.0    | <null>                |
++----+-----------+---------------+-----------+--------+----------+-----------------------+
+```
+
+Findings:
+
+- When querying `artist`, only about 304 rows need to be scanned
+- When querying `artist_v2`, about 200,000 rows need to be scanned
+- The query engine doesn't identify any usable keys in `artist_v2`
+
+That massive number explains why the second query takes so long. However, it doesn’t explain why MySQL needs to scan so many rows in the first place. It should be using the index just as it does in the first query.
+
+Why is the second query scanning all the rows of `artist_v2` instead of using the index?
+
+## Following leads
+
+We know the join executes as expected with `artist`, but it has a problem with `artist_v2`. That indicates that the problem is likely independent of `song` itself, and we should focus on the differences between `artist` and `artist_v2`.
+
+The indexes on both `artist` and `artist_v2` are the same, so my hunch is that the problem is at a level deeper than the index itself. That could mean that it’s related to the engine that each table uses. The quickest way to take a peek is to see the command that would create each table.
+
+```
+> SHOW CREATE TABLE artist;
+CREATE TABLE artist (
+...
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+```
+```
+> SHOW CREATE TABLE artist_v2;
+CREATE TABLE artist_v2 (
+...
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+```
+
+The engine is the same, but interestingly, the charset is different. That seems like as good a lead as any. Let’s see what `song`'s charset is.
+
+```
+> SHOW CREATE TABLE song
+CREATE TABLE song (
+...
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+```
+It’s the same as `artist`'s, and those two tables coincidentally have no problem using the index in joins.
+
+To recap:
+
+- `artist` has charset utf8
+- `artist_v2` has charset utf8mb4
+- `song` has charset utf8
+
+## Applying the fix
+
+Let’s try changing one of the charsets so that `artist_v2` and `song` are consistent with each other.
+
+I’m going to choose to change `song` to utf8mb4 (though I could've also switched `artist_v2` to utf8 instead).
+
+```
+mysql> ALTER TABLE song CONVERT TO CHARACTER SET utf8mb4;
+mysql> SELECT *
+  FROM song
+  JOIN artist_v2 USING (artist_id)
+  LIMIT 5;
++--------------------+--------------+
+| title              | name         |
++--------------------+--------------+
+| Busy Earnin'       | Jungle       |
+| Closetowhy         | Parcels      |
+| Keep Moving        | Jungle       |
+| Stairway to Heaven | Led Zeppelin |
+| Time               | Pink Floyd   |
++--------------------+--------------+
+5 rows in set (0.21 sec)
+```
+
+That was it! The new query is roughly as fast as the old query.
+
+
+## Following up
+
+What’s the difference between the two charsets? When would we want to use one over the other?
+
+The [MySQL docs](https://dev.mysql.com/doc/refman/5.7/en/charset-general.html) do a good job of summarizing charsets and collations in general. This [Stack Overflow answer](https://stackoverflow.com/a/30074553/804237) also helps to explain the practical differences in MySQL specifically.
+
+In summary:
+
+- A charset is a set of symbols and encodings
+	- Example: we assign A=0, B=1, a=2, b=3
+- A collation is a set of rules for comparing characters in the character set
+	- Example: A < B because 0 < 1
+- In MySQL, both **utf8** and **utf8mb4** are charsets that use UTF-8 encoding
+	- UTF-8 can represent all Unicode characters in four bytes or fewer
+- The **utf8** charset is limited to the subset of symbols that are represented by three bytes or fewer
+	- All symbols under three bytes are part of the UTF-8 Basic Multilingual Plane
+- The **utf8mb4** charset can store all UTF-8 symbols (up to four bytes)
+	- This includes four-byte characters beyond the Basic Multilingual Plane (e.g., emojis, some mathematical symbols)
+
+So, **utf8mb4** is the same as **utf8** with the added capability of being able to store four-byte UTF-8 encoded chararcters. It doesn’t cost anything extra to store characters under four bytes.
+
+## More reading
+
+[MySQL 5.7: Charsets](https://dev.mysql.com/doc/refman/5.7/en/charset-mysql.html)
+[MySQL 5.7: Explain Output](https://dev.mysql.com/doc/refman/5.7/en/explain-output.html)
+	</Post>
+</Container>
