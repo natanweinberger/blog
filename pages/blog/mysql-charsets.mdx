@@ -4,11 +4,13 @@ import Container from '@/components/container';
 <Container>
 	<Post>
 
-# Charsets, collations, and slow joins in MySQL
+# Hunting for the cause behind slow joins in MySQL
 
 ## The problem
 
-I have two tables, `artist` and `song`. They look like this:
+I ran into an issue where joins slowed down considerably after upgrading the data source that populates a table in MySQL. The table structure itself didn't change at all, just the provider of the information that fills out the records.
+
+I had two tables, `song` and `artist`:
 
 ```
 mysql> desc artist;
@@ -25,14 +27,27 @@ mysql> desc song;
 +-----------+--------------+-----+
 | Field     | Type         | Key |
 +-----------+--------------+-----+
-| song_id   | int 		   | PRI |
+| song_id   | int          | PRI |
 | title     | varchar(100) |     |
 | artist_id | varchar(100) | MUL |  # foreign key to artist
 +-----------+--------------+-----+
 ```
 
+The `artist` table is the one that has a new data source, so I created an `artist_v2` table with the same structure and loaded the new data into it.
 
-I'd like to join them to match each song to its artist.
+```
+mysql> desc artist_v2;
++-------------------+--------------+-----+
+| Field             | Type         | Key |
++-------------------+--------------+-----+
+| artist_id         | varchar(100) | PRI |
+| name              | varchar(100) |     |
++-------------------+--------------+-----+
+```
+
+Once all the regression tests pass, I can swap the two tables and delete the old one.
+
+However, I found the join between `song` and `artist` slowed down considerably:
 
 ```
 mysql>
@@ -53,17 +68,9 @@ mysql>
 
 ```
 
-This join executes as expected -- quick and easy.
-
-## A step further
-
-I gained access to a new data source for artists. It has all the same fields, but updates with new artists as soon as they register on recording platforms, even if they don't have songs published yet. So instead of having about details for 150,000 artists, I now have about 200,000.
-
-Because all the fields are the same, I'm going to load this into a table called `artist_v2` and confirm my queries still work. I'll add a foreign key from `song` to the new `artist_v2` table to replicate the existing setup as closely as possible.
-
 ```
 mysql>
-	SELECT song.title, artist.name
+	SELECT song.title, artist_v2.name
 	FROM song
 	JOIN artist_v2 USING (artist_id)
 	LIMIT 5;
@@ -77,9 +84,10 @@ mysql>
 | Time               | Pink Floyd   |
 +--------------------+--------------+
 5 rows in set (3.00 sec)
+
 ```
 
-The results are correct, but the query took 3 seconds! That's way slower, something's off.
+The results are correct, which is the most important thing. But the query that uses the new table took 3 seconds! That's way slower, something's off.
 
 ## Possible causes
 
@@ -131,13 +139,15 @@ mysql>
 +----+-----------+---------------+-----------+--------+----------+-----------------------+
 ```
 
-Findings:
+The results of `EXPLAIN` are different, which is great since the query plan is actually different. Now, to try to identify why the query plan is different in the first place.
+
+**Findings**:
 
 - When querying `artist`, only about 304 rows need to be scanned
 - When querying `artist_v2`, about 200,000 rows need to be scanned
 - The query engine doesn't identify any usable keys in `artist_v2`
 
-That massive number explains why the second query takes so long. However, it doesn’t explain why MySQL needs to scan so many rows in the first place. It should be using the index just as it does in the first query.
+That massive number of rows to be scanned explains why the second query takes so long. However, it doesn’t explain why MySQL needs to scan so many rows in the first place. It should be using the index just as it does in the first query.
 
 Why is the second query scanning all the rows of `artist_v2` instead of using the index?
 
@@ -180,7 +190,7 @@ To recap:
 
 Let’s try changing one of the charsets so that `artist_v2` and `song` are consistent with each other.
 
-I’m going to choose to change `song` to utf8mb4 (though I could've also switched `artist_v2` to utf8 instead).
+I’m going to choose to change `song` to **utf8mb4** (though I could've also switched `artist_v2` to **utf8** instead).
 
 ```
 mysql> ALTER TABLE song CONVERT TO CHARACTER SET utf8mb4;
@@ -227,6 +237,7 @@ So, **utf8mb4** is the same as **utf8** with the added capability of being able 
 ## More reading
 
 [MySQL 5.7: Charsets](https://dev.mysql.com/doc/refman/5.7/en/charset-mysql.html)
+
 [MySQL 5.7: Explain Output](https://dev.mysql.com/doc/refman/5.7/en/explain-output.html)
 	</Post>
 </Container>

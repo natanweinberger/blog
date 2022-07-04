@@ -24,7 +24,7 @@ const BlogPost = ({ title, description, slug }) => {
 
 const posts = [
   {
-    title: 'Slow joins, charsets and collations',
+    title: 'Hunting for the cause behind slow joins in MySQL',
     description: 'There will be more to come.',
     slug: 'mysql-charsets',
   },
