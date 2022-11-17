@@ -28,6 +28,11 @@ const posts = [
     description: 'There will be more to come.',
     slug: 'mysql-charsets',
   },
+  // {
+  //   title: 'When writing good code matters',
+  //   description: '',
+  //   slug: 'when-writing-good-code-matters',
+  // }
 ];
 
 const Blog = () => {

@@ -1,0 +1,81 @@
+import { Post } from '@/components/post'
+import Container from '@/components/container';
+
+<Container>
+    <Post>
+
+# When Writing Good Code Matters
+
+This isn't a post extolling the virtues of writing good code. If you're reading this, you probably agree that good code is better than bad code. However, I wanted to write down some thoughts about *when it actually matters*.
+
+When does writing good code actually pay off?
+
+## What is “good”?
+
+There’s obviously no right answer, but I think we can all agree that there’s some combination of these qualities:
+    
+- Naming
+- Structure
+- Explicitness
+    
+All of these things really stem from one fundamental parent idea: **humans are the ones reading and writing the code**.
+
+“Good” means that it makes the most sense to the most number of people. "Bad” means that it’s difficult to understand for the most number of people.
+    
+However, right as the code is deployed to production, there’s really no noticeable difference. In those moments, the only determining factor is whether or not the computer understands what’s been written. Humans are only important in reading and modifying code, not in executing it.
+    
+If the computer can execute the instructions, it doesn't matter how it’s written. The computer either understands perfectly or it doesn’t understand at all.
+    
+## The computer doesn’t care if code is good
+
+So, there are benefits to allocating less thought and energy to writing code this way. It’s faster, for one.
+
+If you’re reading this, there’s a good chance you know what it’s like to bang out some code late into the night. Getting logic out of your head and onto the screen, iterating quickly on what you learn and feeling some pride when you run it and see it work.
+
+I felt this when it finally clicked for me that mobile app development is pretty accessible if you have a laptop and a phone. Others find that feeling when building websites or exploring datasets.
+
+You’re in the zone, you’re too excited to think about optimizing variable names or checking that you have a system of inputs and outputs.
+
+Making tweaks, running it, seeing the results. Projects like these are how a lot of developers got into writing code to begin with. It’s exciting and it’s immediately satisfying. Without those hits of dopamine, many of those projects never get off the ground. Being thoughtful isn’t as satisfying as seeing end results quickly, and that’s ok. Those projects are about learning and prototyping. They’re not meant to last and they’re certainly not competing against others.
+
+## But what about when code does need to last?
+
+It’s really hard to do both. Realistically, there’s a typically a tradeoff between speed and maintainability (tests, structure, naming). Maintainability takes thought and practice.
+
+Speed is fun in the short-term. You see immediate results.
+
+Maintainability is rewarding. When you build quickly, you hope that things don't go wrong down the line. When you build thoughtfully, you sleep well knowing that things WILL go wrong, but you’ve designed your software to make it easy to identify problems and be precise with the debugging and resolution. Inputs and outputs. Intermediate artifacts. These are gifts you give yourself and future maintainers to quickly diagnose problems and confidently react to them.
+
+## So why bother?
+
+    - If we treat maintainability as a virtue, then there’s no reason to. It’s not worth the effort and the tradeoffs just to be “right.”
+    - Besides, try pitching that to your manager. Product managers don’t get paid to draw projects out, they get paid to get things out the door in a punctual manner. So if ideals won’t convince a company, what will?
+    
+    How about money?
+**Writing maintainable code makes your company money**
+Maintainable code is code that is, by definition, modifiable. Why would you need to modify code?
+
+Most industries are constantly changing. Sometimes in small ways, sometimes in big ways. Social media companies constantly stumble onto impactful features like stories, and other apps find themselves under (self-inflicted) pressure to mimic them. Governments pass laws that change how banks, insurance companies and self-driving vehicle companies operate, sometimes with short notice.
+Any product manager will tell you how critical it is to be able to react quickly in these scenarios. Falling behind the competition can be a dagger, especially for a company that’s already lost a step.
+So, if you can’t react to the environment, you’re at a disadvantage relative to your competitors. If you can, you’re at an advantage. Reaction time is a competitive advantage.
+
+How can you minimize reaction time? What IS reaction time? It’s the amount of time it takes for an engineer to understand the current state of the code and move it to the desired state. Any code that currently exists will have to be revisited by a human and modified to move it to the desired state. You can’t modify something you don’t understand, and that quality of being easily understood is the very core of what it means to be maintainable. When variables are named thoughtfully and inputs and outputs are clearly defined, future maintainers will be able to open a file and quickly understand how they can start moving from one state to another.
+
+Thoughtful structure anticipates that the requirements might change. Sometimes in predictable ways, sometimes in wholly unpredictable ways. The bet you make when you write thoughtfully is that you are minimizing the friction for a future maintainer to adapt your code. And it is *obvious* when it happens.
+- Competitive advantage
+- Reaction time
+- Adaptability
+- Concrete examples
+    - Two products are built
+    - The environment will change - an API, a law, a breakthrough
+    - Your product will adapt quickly
+    - Competitor will lag behind a week or two
+
+Why does this happen?
+    Everything we build is designed by humans, and humans maintain it
+    Future modification, adaption happens BY humans
+        The barrier to entry needs to be low
+        How can ANYONE come in, understand the situation quickly and make a change confidently?
+    When the competition can’t adjust as quickly, it’s not because their current engineers are worse. It’s because all humans require time to understand what they’re looking at and navigate the environment. We can’t change that. But we can make the environment easy or difficult to navigated, and that’s where thoughtful, maintainable code shines. Not when it’s written, but when it’s revisited.
+    </Post>
+</Container>
