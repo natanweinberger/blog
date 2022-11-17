@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 const links = {
-  '/projects': 'Projects',
+  // '/projects': 'Projects',
   '/blog': 'Blog',
   'https://github.com/natanweinberger': 'Source',
 };
