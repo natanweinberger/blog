@@ -8,7 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@mdx-js/loader": "^2.0.0",
+    "@mdx-js/loader": "^2.1.5",
+    "@mdx-js/react": "^2.1.5",
     "@next/mdx": "^12.1.0",
     "@tailwindcss/typography": "^0.5.2",
     "date-fns": "^2.26.0",
@@ -16,6 +17,7 @@
     "next": "^12.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "remark-gfm": "^3.0.1",
     "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
