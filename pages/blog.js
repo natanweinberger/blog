@@ -10,7 +10,7 @@ const BlogPostTitle = ({ children }) => (
 
 const BlogPost = ({ title, description, slug, published }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" key="slug">
     {published != false && 
       <Link href={`blog/${slug}` || '/'}>
         <a>
