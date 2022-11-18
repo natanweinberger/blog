@@ -8,16 +8,24 @@ const BlogPostTitle = ({ children }) => (
   </h3>
 );
 
-const BlogPost = ({ title, description, slug }) => {
+const BlogPost = ({ title, description, slug, published }) => {
   return (
     <div className="flex flex-col">
+    {published != false && 
       <Link href={`blog/${slug}` || '/'}>
         <a>
           <BlogPostTitle>{title}</BlogPostTitle>
 
-          {/*<span>{description}</span>*/}
+          <span>{description}</span>
         </a>
       </Link>
+    }
+    {published == false && <>
+      <h3 className="font-semibold text-md md:text-lg">
+        {title}
+      </h3>
+
+      <span>{description}</span></>}
     </div>
   );
 };
@@ -25,14 +33,20 @@ const BlogPost = ({ title, description, slug }) => {
 const posts = [
   {
     title: 'Hunting for the cause behind slow joins in MySQL',
-    description: 'There will be more to come.',
     slug: 'mysql-charsets',
   },
-  // {
-  //   title: 'When writing good code matters',
-  //   description: '',
-  //   slug: 'when-writing-good-code-matters',
-  // }
+  {
+    title: 'When writing good code matters',
+    description: 'Coming soon...',
+    slug: 'when-writing-good-code-matters',
+    published: false,
+  },
+  {
+    title: 'Fast ethernet, slow wi-fi',
+    description: 'Coming soon...',
+    slug: 'when-writing-good-code-matters',
+    published: false,
+  }
 ];
 
 const Blog = () => {
