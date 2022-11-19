@@ -2,32 +2,28 @@ import Link from 'next/link';
 import Container from '@/components/container';
 import { H1, H2 } from '@/components/heading';
 
-const BlogPostTitle = ({ children }) => (
-  <h3 className="font-semibold text-md md:text-lg text-blue-700">
+const BlogPostTitle = ({ published, children }) => {
+  const textColor = published != false ? 'text-blue-700' : 'text-black'
+
+  return (
+  <h3 className={`font-semibold text-md md:text-lg ${textColor}`}>
     {children}
   </h3>
-);
+  )
+};
 
 const BlogPost = ({ title, description, slug, published }) => {
-  return (
-    <div className="flex flex-col" key="slug">
-    {published != false && 
-      <Link href={`blog/${slug}` || '/'}>
-        <a>
-          <BlogPostTitle>{title}</BlogPostTitle>
+  const shouldMakePostLinkable = published != false || process.env.NEXT_PUBLIC_ENV;
+  const createLinkToPost = (children) => <Link href={`blog/${slug}`}><a>{children}</a></Link>
 
-          <span>{description}</span>
-        </a>
-      </Link>
-    }
-    {published == false && <>
-      <h3 className="font-semibold text-md md:text-lg">
-        {title}
-      </h3>
+  const UnlinkedListing = () => (
+    <a>
+      <BlogPostTitle published={shouldMakePostLinkable}>{title}</BlogPostTitle>
+      <span>{description}</span>
+    </a>
+  )
 
-      <span>{description}</span></>}
-    </div>
-  );
+  return shouldMakePostLinkable ? createLinkToPost(<UnlinkedListing />) : <UnlinkedListing />
 };
 
 const posts = [
@@ -44,7 +40,7 @@ const posts = [
   {
     title: 'Fast ethernet, slow wi-fi',
     description: 'Coming soon...',
-    slug: 'when-writing-good-code-matters',
+    slug: 'fast-ethernet-slow-wifi',
     published: false,
   }
 ];
@@ -55,7 +51,7 @@ const Blog = () => {
       <H1>Posts</H1>
       <div className="flex flex-col space-y-6 py-4">
         {posts.map((post) => (
-          <BlogPost {...post} />
+          <BlogPost {...post} key={post.slug}/>
         ))}
       </div>
     </Container>
