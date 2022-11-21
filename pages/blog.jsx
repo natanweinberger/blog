@@ -33,9 +33,7 @@ const posts = [
   },
   {
     title: 'Maintainable code as a competitive advantage',
-    description: 'Coming soon...',
     slug: 'maintainable-code-as-a-competitive-advantage',
-    published: false,
   },
   {
     title: 'How to get around slow hotel wi-fi',
