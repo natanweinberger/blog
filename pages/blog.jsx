@@ -32,7 +32,7 @@ const posts = [
     slug: 'mysql-charsets',
   },
   {
-    title: 'When writing good code matters',
+    title: 'Maintainable code as a competitive advantage',
     description: 'Coming soon...',
     slug: 'when-writing-good-code-matters',
     published: false,
