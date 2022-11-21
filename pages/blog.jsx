@@ -34,11 +34,11 @@ const posts = [
   {
     title: 'Maintainable code as a competitive advantage',
     description: 'Coming soon...',
-    slug: 'when-writing-good-code-matters',
+    slug: 'maintainable-code-as-a-competitive-advantage',
     published: false,
   },
   {
-    title: 'Fast ethernet, slow wi-fi',
+    title: 'How to get around slow hotel wi-fi',
     description: 'Coming soon...',
     slug: 'fast-ethernet-slow-wifi',
     published: false,
