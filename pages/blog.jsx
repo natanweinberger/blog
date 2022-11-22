@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link';
 import Container from '@/components/container';
 import { H1, H2 } from '@/components/heading';
@@ -13,15 +14,15 @@ const BlogPostTitle = ({ published, children }) => {
 };
 
 const BlogPost = ({ title, description, slug, published }) => {
-  const shouldMakePostLinkable = published != false || process.env.NEXT_PUBLIC_ENV;
-  const createLinkToPost = (children) => <Link href={`blog/${slug}`}><a>{children}</a></Link>
+  const shouldMakePostLinkable = published != false || process.env.NEXT_PUBLIC_ENV == 'dev';
+  const createLinkToPost = (children) => <Link href={`/blog/${slug}`} passHref legacyBehavior>{children}</Link>
 
-  const UnlinkedListing = () => (
-    <a>
+  const UnlinkedListing = React.forwardRef(({ href }, ref)  => (
+    <a href={href} ref={ref}>
       <BlogPostTitle published={shouldMakePostLinkable}>{title}</BlogPostTitle>
       <span>{description}</span>
     </a>
-  )
+  ))
 
   return shouldMakePostLinkable ? createLinkToPost(<UnlinkedListing />) : <UnlinkedListing />
 };
