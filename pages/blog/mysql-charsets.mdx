@@ -8,19 +8,7 @@ import Container from '@/components/container';
 
 ## The problem
 
-I ran into an issue where joins slowed down considerably after upgrading the data source that populates a table in MySQL. The table structure itself didn't change at all, just the provider of the information that fills out the records.
-
 I had two tables, `song` and `artist`:
-
-```
-mysql> desc artist;
-+-------------------+--------------+-----+
-| Field             | Type         | Key |
-+-------------------+--------------+-----+
-| artist_id         | varchar(100) | PRI |
-| name              | varchar(100) |     |
-+-------------------+--------------+-----+
-```
 
 ```
 mysql> desc song;
@@ -33,7 +21,17 @@ mysql> desc song;
 +-----------+--------------+-----+
 ```
 
-The `artist` table is the one that has a new data source, so I created an `artist_v2` table with the same structure and loaded the new data into it.
+```
+mysql> desc artist;
++-------------------+--------------+-----+
+| Field             | Type         | Key |
++-------------------+--------------+-----+
+| artist_id         | varchar(100) | PRI |
+| name              | varchar(100) |     |
++-------------------+--------------+-----+
+```
+
+I found a new data source for the `artist` table, so I created an `artist_v2` table with the same structure and loaded the new data into it.
 
 ```
 mysql> desc artist_v2;
@@ -45,10 +43,11 @@ mysql> desc artist_v2;
 +-------------------+--------------+-----+
 ```
 
-Once all the regression tests pass, I can swap the two tables and delete the old one.
+Once regression tests verify that the accuracy hasn't changed, I can swap the two tables and delete the old one.
 
 However, I found the join between `song` and `artist` slowed down considerably:
 
+<div className="sm:flex sm:justify-between sm:text-sm">
 ```
 mysql>
 	SELECT song.title, artist.name
@@ -86,6 +85,7 @@ mysql>
 5 rows in set (3.00 sec)
 
 ```
+</div>
 
 The results are correct, which is the most important thing. But the query that uses the new table took 3 seconds! That's way slower, something's off.
 
