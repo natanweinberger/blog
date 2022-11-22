@@ -31,10 +31,12 @@ const posts = [
   {
     title: 'Hunting for the cause behind slow joins in MySQL',
     slug: 'mysql-charsets',
+    date: '2020-09-01',
   },
   {
     title: 'Maintainable code as a competitive advantage',
     slug: 'maintainable-code-as-a-competitive-advantage',
+    date: '2022-11-21',
   },
   {
     title: 'How to get around slow hotel wi-fi',
