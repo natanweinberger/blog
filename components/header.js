@@ -3,7 +3,7 @@ import Link from 'next/link';
 const links = {
   // '/projects': 'Projects',
   '/blog': 'Blog',
-  'https://github.com/natanweinberger': 'Source',
+  'https://github.com/natanweinberger/blog': 'Source',
 };
 
 const Header = () => (
