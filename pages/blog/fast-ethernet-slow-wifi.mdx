@@ -1,0 +1,65 @@
+import { Post } from '@/components/post'
+import Container from '@/components/container'
+import Figure from '@/components/figure'
+import Image from 'next/image'
+import slowDownloadSpeedImage from '@/public/images/fast-ethernet-slow-wifi/slow-download-speed.png'
+import fastDownloadSpeedImage from '@/public/images/fast-ethernet-slow-wifi/fast-download-speed.png'
+import internetSharing from '@/public/images/fast-ethernet-slow-wifi/internet-sharing.png'
+import internetSharingSetup from '@/public/images/fast-ethernet-slow-wifi/internet-sharing-setup.png'
+import connectToSharedWifi from '@/public/images/fast-ethernet-slow-wifi/connect-to-shared-wifi.png'
+
+<Container>
+<Post>
+
+# Fast Ethernet, Slow Wi-Fi
+
+I recently stayed at a hotel where the Wi-Fi connection was much slower than the Ethernet.
+
+<Figure imageSrc={slowDownloadSpeedImage} caption="Super slow Wi-Fi" />
+
+<Figure imageSrc={fastDownloadSpeedImage} caption="Speedy ethernet" />
+
+The ethernet connection is way better, but it only works with my laptop. How can I share the stronger Ethernet connection with my phone and Chromecast?
+
+## Sharing the Ethernet connection via Bluetooth
+
+This was my first instinct. It works, but it's super slow.
+
+Depending on the version of Bluetooth on your devices, the data transfer rate might be capped at [no more than a few Mbit/s](https://resources.pcb.cadence.com/blog/2022-transmission-rate-vs-bandwidth-in-bluetooth-technology).
+
+## Broadcasting a Wi-Fi network
+
+It turns out that Macs can broadcast their own Wi-Fi network.
+
+The catch is that the Wi-Fi card can only do one thing at a time. If it's connected to a Wi-Fi network, it can't simultaneously broadcast a new signal for other devices to connect to.
+
+However, since we're plugged into Ethernet, we're not using the Wi-Fi card. We can use it to broadcast a new network for other devices to connect to.
+
+## Creating a wireless network
+
+To do so, head to `System Preferences > Sharing` and click on `Internet Sharing` (but don't enable it just yet).
+
+You'll see an dropdown menu where you can choose to share your connection from a LAN, your Ethernet connection.
+
+In my case, the option is labeled `Belkin USB-C LAN`.
+
+Next, select the option to share to computers using Wi-Fi.
+
+<Figure imageSrc={internetSharing} caption=""/>
+
+Lastly, click on `Wi-Fi Options` and customize the new network details.
+
+<Figure imageSrc={internetSharingSetup} caption=""/>
+
+Then, check the box next to `Internet Sharing` on the left-hand menu. The Internet Sharing options will gray out and your Mac will start broadcasting a Wi-Fi signal that your other devices can connect to.
+
+From other devices, the new network is available to connect to.
+
+<Figure imageSrc={connectToSharedWifi} caption=""/>
+
+## Casting Perks
+
+Typically, hotel networks aren't friendly with casting devices, but streaming devices like Chromecast or Apple TV have no issues with the network broadcast from the Mac.
+
+</Post>
+</Container>

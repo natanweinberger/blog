@@ -40,9 +40,7 @@ const posts = [
   },
   {
     title: 'How to get around slow hotel wi-fi',
-    description: 'Coming soon...',
     slug: 'fast-ethernet-slow-wifi',
-    published: false,
   }
 ];
 
